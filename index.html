@@ -2384,7 +2384,7 @@
 
     async function loadData() {
       try {
-        const res = await fetch('./data/cards.json', { cache: 'no-cache' });
+        const res = await fetch('https://api.cardwisehk.com');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const payload = await res.json();
 
