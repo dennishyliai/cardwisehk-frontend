@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="zh-HK" data-theme="light">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardWise 一眼搵到最啱你嘅信用卡</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+    
+    <style>
+        [data-theme="dark"] {
+            --bg: rgba(11, 16, 21, 1);
+            --surface: rgba(41, 41, 43, 1);
+            --surface2: #1c1c28;
+            
+            --border: rgba(42, 48, 55, 1);
+            --border-hover: rgba(255, 255, 255, 0.16);
+            
+            --card-border1: 1px solid rgba(254, 0, 3, 0.15);
+            
+            --accent: #d6d6d6;
+            --accent3: #e87ab0;
+            --accent4: #ffffff;
+            
+            --text: #ffffff;
+            --text2: #c8c5c0;
+            --muted: #ffffff;
+            
+            --green: #6ee7b7;
+            --red: #f87171;
+            
+            --nav-bg: rgba(10, 10, 15, 0.88);
+            --card-hover-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+            --modal-bg: #13131a;
+            --placeholder: rgba(173, 180, 190, 1);
+            
+            --filter-background: #13131a;
+            --filter-border: rgba(42, 48, 55, 1);
+            --filter-border-hover: rgba(255, 255, 255, 0.16);
+            --filter-text: #ffffff;
+        }
+
+        [data-theme="light"] {
+            --bg: rgb(255 255 255);
+            --surface: #ffffff;
+            --surface2: #ebe9e4;
+            
+            --border: rgba(231, 234, 240, 0.75);
+            --border-hover: rgba(0, 0, 0, 0.18);
+            
+            --card-border1: 1px solid rgba(254, 0, 3, 0.15);
+            
+            --accent: #d6d6d6;
+            --accent3: #982060;
+            --accent4: #000000;
+            
+            --text: #18160f;
+            --text2: #38342a;
+            --muted: rgba(11, 16, 21, 0.9);
+            
+            --green: #0d6b45;
+            --red: #b02020;
+            
+            --nav-bg: rgba(242, 240, 236, 0.92);
+            --card-hover-shadow: 0 24px 64px rgba(0, 0, 0, 0.10);
+            --modal-bg: #ffffff;
+            --placeholder: rgba(102, 107, 116, 1);
+            
+            --filter-background: #ffffff;
+            --filter-border: rgba(231, 234, 240, 0.75);
+            --filter-border-hover: rgba(0, 0, 0, 0.18);
+            --filter-text: rgba(11, 16, 21, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.35s, color 0.35s;
+        }
+
+        /* Dark theme decorative gradients */
+        [data-theme="dark"] body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: -20%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(ellipse, rgba(232, 201, 122, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        [data-theme="dark"] body::after {
+            content: '';
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 50%;
+            height: 60%;
+            background: radial-gradient(ellipse, rgba(122, 184, 232, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Top Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 40px;
+            background: var(--bg);
+            backdrop-filter: blur(22px);
+            transition: background 0.35s, border-color 0.35s;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.35rem;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo2 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+            color: var(--accent4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .logo .ls { color: var(--text); }
+        .logo .lm {
+            color: var(--muted);
+            font-size: 0.78em;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .last-updated {
+            font-size: 0.71rem;
+            color: var(--muted);
+            margin-right: 4px;
+        }
+
+        /* Theme Toggle Pill */
+        .toggle-pill {
+            display: flex;
+            background: var(--filter-background);
+            border-radius: 18px;
+            padding: 3px;
+            border: 1.5px solid var(--filter-border);
+            transition: background 0.35s, border-color 0.35s;
+            gap: 3px;
+        }
+
+        .toggle-btn {
+            padding: 5px 13px;
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 510;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: pre;
+        }
+
+        .toggle-btn:hover {
+            background: var(--filter-border);
+        }
+
+        .toggle-btn.active {
+            background: var(--filter-border);
+            color: var(--filter-text);
+        }
+
+        /* Theme Button */
+        .theme-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 18px;
+            border: 1.5px solid var(--filter-border);
+            background: var(--filter-background);
+            color: var(--filter-text);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        @media (hover: hover) {
+            .theme-btn:hover:not(.active) {
+                border-color: var(--filter-border);
+                background: var(--filter-border);
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding: 64px 40px 42px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(154, 118, 32, 0.1);
+            border: 1px solid rgba(154, 118, 32, 0.25);
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 18px;
+        }
+
+        [data-theme="dark"] .eyebrow {
+            background: rgba(232, 201, 122, 0.1);
+            border-color: rgba(232, 201, 122, 0.22);
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.75); }
+        }
+
+        .hero h1 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 26px;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 14px;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-size: 0.90rem;
+            color: var(--muted);
+            max-width: 500px;
+            line-height: 1.75;
+            margin-bottom: 0;
+        }
+
+        .stats {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-n {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.9rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .stat-l {
+            font-size: 0.74rem;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        /* Controls / Search */
+        .controls {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 26px;
+        }
+
+        .search-wrap {
+            position: relative;
+            margin-bottom: 6px;
+        }
+
+        .si {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 42px 10px 45px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.35s;
+        }
+
+        .search-input::placeholder {
+            color: var(--muted);
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            background: var(--surface2);
+            color: var(--muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.18s, color 0.18s;
+        }
+
+        .search-clear:hover {
+            background: var(--border-hover);
+            color: var(--text);
+        }
+
+        .search-clear.visible {
+            display: flex;
+        }
+
+                /* Horizontal Scroll Rows */
+        .feat-row,
+        .filter-row,
+        .fee-row,
+        .bank-row {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 7px;
+            padding: 6px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .feat-row::-webkit-scrollbar,
+        .filter-row::-webkit-scrollbar,
+        .fee-row::-webkit-scrollbar,
+        .bank-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .flabel {
+            font-size: 0.71rem;
+            color: var(--muted);
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: 2px;
+        }
+
+        /* ====================== "All" Feature Chip ====================== */
+        .featchip.all {
+            background: rgb(255 110 0 / 83%);
+            color: #ffffff;
+            border: 1px solid rgba(255, 110, 0, 0.45);
+            transition: all 0.2s ease;
+        }
+
+        .featchip.all:hover {
+            background: rgba(14, 116, 204, 0.32);
+            color: #1e2f6b;
+            border: 1px solid rgba(14, 116, 204, 0.70);
+        }
+
+        .featchip.all.active {
+            background: rgb(255 110 0 / 83%);
+            color: #ffffff;
+            border: 1.5px solid rgba(255, 110, 0, 0.85);
+            box-shadow: 0 0 0 4px rgba(255, 110, 0, 0.5);
+        }
+
+        /* Dark mode overrides for "All" chip */
+        [data-theme="dark"] .featchip.all {
+            border: 1px solid rgba(255, 154, 77, 0.85);
+        }
+
+        [data-theme="dark"] .featchip.all:hover {
+            background: rgba(14, 116, 204, 0.40);
+            color: #93c5fd;
+            border: 1px solid rgba(14, 116, 204, 0.80);
+        }
+
+        [data-theme="dark"] .featchip.all.active {
+            border: 1.5px solid rgba(255, 154, 77, 0.85);
+            box-shadow: 0 0 0 4px rgba(255, 110, 0, 0.35);
+        }
+
+        /* ====================== Miles Chip ====================== */
+        .featchip.miles {
+            background: rgba(14, 116, 204, 0.12);
+            color: rgb(0 61 153);
+            border: 1.5px solid rgba(14, 116, 204, 0.3);
+        }
+
+        @media (hover: hover) {
+            .featchip.miles:hover:not(.active) {
+                background: rgb(10 0 255);
+                color: rgb(255 255 255);
+                border: 1.5px solid rgb(10 0 255);
+            }
+        }
+
+        .featchip.miles.active,
+        [data-theme="dark"] .featchip.miles.active {
+            background: rgb(10 0 255);
+            color: rgb(255 255 255);
+            border: 1.5px solid rgb(10 0 255);
+        }
+
+        [data-theme="dark"] .featchip.miles {
+            background: rgba(147, 197, 253, 0.18);
+            color: rgb(147 197 253);
+            border: 1.5px solid rgba(147, 197, 253, 0.35);
+        }
+
+        /* ====================== Cashback Chip ====================== */
+        .featchip.cashback {
+            background: rgb(14 204 70 / 12%);
+            color: rgb(13 116 44);
+            border: 1.5px solid rgb(12 141 50 / 34%);
+        }
+
+        @media (hover: hover) {
+            .featchip.cashback:hover:not(.active) {
+                background: rgb(14 204 70 / 100%);
+                color: rgb(255 255 255);
+                border: 1.5px solid rgb(14 204 70 / 100%);
+            }
+        }
+
+        .featchip.cashback.active,
+        [data-theme="dark"] .featchip.cashback.active {
+            background: rgb(14 204 70 / 100%);
+            color: rgb(255 255 255);
+            border: 1.5px solid rgb(14 204 70 / 100%);
+        }
+
+        [data-theme="dark"] .featchip.cashback {
+            background: rgb(14 204 70 / 12%);
+            color: rgb(17 176 64);
+            border: 1.5px solid rgb(14 204 70 / 44%);
+        }
+
+        /* ====================== Dining Chip ====================== */
+        .featchip.dining {
+            background: rgb(255 164 19 / 23%);
+            color: rgb(162 99 0);
+            border: 1.5px solid rgb(255 164 19 / 52%);
+        }
+
+        @media (hover: hover) {
+            .featchip.dining:hover:not(.active) {
+                background: rgb(255 164 19 / 100%);
+                color: rgb(255 255 255);
+                border: 1.5px solid rgb(255 164 19 / 100%);
+            }
+        }
+
+        .featchip.dining.active,
+        [data-theme="dark"] .featchip.dining.active {
+            background: rgb(255 164 19 / 100%);
+            color: rgb(255 255 255);
+            border: 1.5px solid rgb(255 164 19 / 100%);
+        }
+
+        [data-theme="dark"] .featchip.dining {
+            background: rgb(255 164 19 / 23%);
+            color: rgb(220 147 34);
+            border: 1.5px solid rgb(255 164 19 / 33%);
+        }
+
+        /* ====================== Online Chip ====================== */
+        .featchip.online {
+            background: rgb(14 204 198 / 12%);
+            color: rgb(8 78 76);
+            border: 1.5px solid rgb(14 125 122 / 35%);
+        }
+
+        @media (hover: hover) {
+            .featchip.online:hover:not(.active) {
+                background: rgb(13 156 152);
+                color: rgb(255 255 255);
+                border: 1.5px solid rgb(13 156 152);
+            }
+        }
+
+        .featchip.online.active,
+        [data-theme="dark"] .featchip.online.active {
+            background: rgb(13 156 152);
+            color: rgb(255 255 255);
+            border: 1.5px solid rgb(13 156 152);
+        }
+
+        [data-theme="dark"] .featchip.online {
+            background: rgb(14 204 198 / 23%);
+            color: rgb(28 200 195);
+            border: 1.5px solid rgb(14 125 122);
+        }
+
+        /* ====================== Supermarket Chip ====================== */
+        .featchip.supermarket {
+            background: rgb(187 14 204 / 12%);
+            color: rgb(165 20 179);
+            border: 1.5px solid rgb(187 14 204 / 37%);
+        }
+
+        @media (hover: hover) {
+            .featchip.supermarket:hover:not(.active) {
+                background: rgb(214 13 234 / 100%);
+                color: rgb(255 255 255);
+                border: 1.5px solid rgb(214 13 234 / 100%);
+            }
+        }
+
+        .featchip.supermarket.active,
+        [data-theme="dark"] .featchip.supermarket.active {
+            background: rgb(214 13 234 / 100%);
+            color: rgb(255 255 255);
+            border: 1.5px solid rgb(214 13 234 / 100%);
+        }
+
+        [data-theme="dark"] .featchip.supermarket {
+            background: rgb(187 14 204 / 21%);
+            color: rgb(233 0 255);
+            border: 1.5px solid rgb(187 14 204 / 58%);
+        }
+
+                /* Base Feature Chip */
+        .featchip {
+            padding: 6px 13px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.79rem;
+            font-weight: 510;
+            cursor: pointer;
+            transition: all 0.18s;
+            display: flex;
+            align-items: center;
+            white-space: pre;
+            flex: 0 0 auto;
+            gap: 7px;
+        }
+
+        /* Filter / Bank Chips */
+        .chip,
+        .fchip,
+        .bchip {
+            padding: 6px 13px;
+            border-radius: 20px;
+            border: 1.5px solid var(--filter-border);
+            background: var(--filter-background);
+            color: var(--filter-text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.79rem;
+            font-weight: 510;
+            cursor: pointer;
+            transition: all 0.18s;
+            display: flex;
+            align-items: center;
+            white-space: pre;
+            flex: 0 0 auto;
+        }
+
+        @media (hover: hover) {
+            .chip:hover:not(.active),
+            .fchip:hover:not(.active),
+            .bchip:hover:not(.active) {
+                border-color: var(--filter-border);
+                color: var(--filter-text);
+                background: var(--filter-border);
+            }
+        }
+
+        .chip.active,
+        .fchip.active,
+        .bchip.active {
+            border-color: var(--filter-border);
+            color: var(--filter-text);
+            background: var(--filter-border);
+        }
+
+        /* ====================== Grid Section ====================== */
+        .grid-sec {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 80px;
+        }
+
+        .grid-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--filter-border);
+            padding: 18px 0;
+        }
+
+        .rcount {
+            font-size: 0.81rem;
+            margin-left: auto;
+            padding-right: 10px;
+        }
+
+        .rcount strong {
+            color: var(--text);
+        }
+
+        .bank-count-num {
+            color: #18160f;
+        }
+
+        [data-theme="dark"] .bank-count-num {
+            color: #ffffff;
+        }
+
+        .sort-sel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.81rem;
+            padding: 7px 11px;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            transition: background 0.35s;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(336px, 1fr));
+            gap: 40px;
+        }
+
+        /* ====================== Credit Card Tile ====================== */
+        .card {
+            border-radius: 38px;
+            overflow: hidden;
+            border-width: 1px;
+            background: var(--surface);
+            transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s, background 0.35s;
+            cursor: pointer;
+            animation: fadeUp 0.38s ease both;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(16px) saturate(180%);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .card-banner {
+            height: 5px;
+            width: 100%;
+        }
+
+        .card-hdr {
+            padding: 0 13px 13px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-img-col {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-img-col img {
+            height: 62px;
+            width: auto;
+            max-width: 96px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+            padding: 0 0 0 4px;
+        }
+
+        .card-img-placeholder {
+            width: 70px;
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bank-badge {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 5px;
+        }
+
+        .logo-wrap {
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            border-width: 1px;
+            border-style: solid;
+            transition: background 0.35s;
+        }
+
+        .logo-wrap svg,
+        .logo-wrap img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+            border-radius: 3px;
+        }
+
+        .bname {
+            font-size: 0.71rem;
+            color: var(--muted);
+            font-weight: 500;
+            line-height: 1;
+            text-align: right;
+        }
+
+        .cname {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.25;
+        }
+
+        .badge {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 6px;
+            white-space: pre;
+        }
+
+        /* Badge Variants */
+        .badge.miles {
+            background: rgba(14, 116, 204, 0.12);
+            color: rgb(0 61 153);
+            border: 1.5px solid rgba(14, 116, 204, 0.3);
+        }
+
+        [data-theme="dark"] .badge.miles {
+            background: rgba(147, 197, 253, 0.18);
+            color: #93c5fd;
+            border: 1px solid rgba(147, 197, 253, 0.35);
+        }
+
+        .badge.cashback {
+            background: rgb(14 204 70 / 12%);
+            color: rgb(13 116 44);
+            border: 1.5px solid rgb(14 204 70 / 100%);
+        }
+
+        [data-theme="dark"] .badge.cashback {
+            background: rgb(14 204 70 / 12%);
+            color: rgb(17 176 64);
+            border: 1.5px solid rgb(14 204 70 / 44%);
+        }
+
+        .badge.dining {
+            background: rgb(255 164 19 / 23%);
+            color: rgb(162 99 0);
+            border: 1.5px solid rgb(255 164 19 / 52%);
+        }
+
+        [data-theme="dark"] .badge.dining {
+            background: rgb(255 164 19 / 23%);
+            color: rgb(205 132 18);
+            border: 1.5px solid rgb(255 164 19 / 33%);
+        }
+
+        .badge.online {
+            background: rgb(14 204 198 / 12%);
+            color: rgb(8 78 76);
+            border: 1.5px solid rgb(14 125 122 / 35%);
+        }
+
+        [data-theme="dark"] .badge.online {
+            background: rgb(14 204 198 / 23%);
+            color: rgb(28 200 195);
+            border: 1.5px solid rgb(14 125 122);
+        }
+
+        .badge.supermarket {
+            background: rgb(187 14 204 / 12%);
+            color: rgb(165 20 179);
+            border: 1.5px solid rgb(187 14 204 / 37%);
+        }
+
+        [data-theme="dark"] .badge.supermarket {
+            background: rgb(187 14 204 / 21%);
+            color: rgb(233 0 255);
+            border: 1.5px solid rgb(187 14 204 / 58%);
+        }
+
+        /* Card Footer Elements */
+        .afee {
+            font-size: 0.71rem;
+            color: var(--muted);
+        }
+
+        .afee.free {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .rhigh {
+            margin: 0 13px;
+            padding: 15px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            transition: background 0.35s;
+        }
+
+        .ri {
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+
+        .rt {
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .cats {
+            padding: 0 19px 16px;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .ctag {
+            font-size: 0.68rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            border: 1px solid rgb(0 0 0 / 5%);
+            color: #525252;
+            background: rgb(198 198 198 / 10%);
+        }
+
+                /* Dark mode tag adjustment */
+        [data-theme="dark"] .ctag {
+            background: rgb(198 198 198 / 10%);
+            color: #c2c2c2;
+        }
+
+        /* Card Footer */
+        .cfoot {
+            padding: 13px 13px 13px 23px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border);
+        }
+
+        .stag {
+            font-size: 0.57rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .sdot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--muted);
+        }
+
+        .sdot.mh { background: #3b82f6; }
+        .sdot.bk { background: var(--accent); }
+        .sdot.xs { background: var(--accent3); }
+
+        .vbtn {
+            font-size: 0.73rem;
+            font-weight: 600;
+            padding: 5px 11px;
+            border-radius: 38px;
+            cursor: pointer;
+            transition: all 0.18s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            border-width: 1px;
+            border-style: solid;
+        }
+
+        [data-theme="dark"] .vbtn {
+            color: #ffffff !important;
+        }
+
+        /* Card Info Row */
+        .cinfo-row {
+            display: flex;
+            gap: 0;
+            margin: 16px 13px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: border-color 0.35s;
+            flex-wrap: wrap;
+        }
+
+        .cinfo-cell {
+            flex: 1 1 48%;
+            min-width: 48%;
+            padding: 13px 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .cinfo-cell:first-child {
+            border-right: 1px solid var(--border);
+        }
+
+        .cinfo-label {
+            font-size: 0.60rem;
+            font-weight: 700;
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .cinfo-value {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        /* No Results */
+        .nores {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+            grid-column: 1 / -1;
+        }
+
+        .nores .ico {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        /* Modal */
+        .moverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .moverlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--modal-bg);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            animation: mIn 0.24s ease;
+            transition: background 0.35s;
+        }
+
+        @keyframes mIn {
+            from {
+                opacity: 0;
+                transform: scale(0.94) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .mclose {
+            position: absolute;
+            top: 12px;
+            right: 17px;
+            background: var(--surface);
+            border: 0;
+            color: var(--text);
+            width: 50px;
+            height: 21px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.18s;
+        }
+
+        .mbody {
+            padding: 17px;
+            background: var(--surface);
+        }
+
+        .mbank {
+            font-size: 0.72rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 3px;
+        }
+
+        .mtitle {
+            font-size: 16px;
+            margin-bottom: 0;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .msec {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 9px;
+            margin-top: 18px;
+        }
+
+        .bitem {
+            display: flex;
+            gap: 10px;
+            padding: 9px 0;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            font-weight: 450;
+        }
+
+        .bitem:last-child {
+            border-bottom: none;
+        }
+
+        .bico {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .macts {
+            display: flex;
+            gap: 9px;
+            margin-top: 20px;
+        }
+
+        .mbtn {
+            flex: 1;
+            padding: 11px;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .mbtn.pri {
+            color: #111009;
+            border: none;
+        }
+
+        .mbtn.pri:hover {
+            opacity: 0.88;
+        }
+
+        .mbtn.sec {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .mbtn.sec:hover {
+            background: var(--surface2);
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 24px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .fleft {
+            font-size: 0.76rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .fsrcs {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .fsrc {
+            font-size: 0.73rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Search Placeholder */
+        .search-input::placeholder {
+            color: var(--placeholder);
+            font-size: 0.85rem;
+            font-weight: 400;
+            font-family: 'DM Sans', sans-serif;
+            transition: color 0.2s ease;
+        }
+
+        [data-theme="dark"] .search-input::placeholder {
+            color: var(--placeholder);
+        }
+
+                /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                padding: 7px 16px;
+            }
+
+            .last-updated {
+                display: none;
+            }
+
+            .hero {
+                padding: 20px 16px;
+            }
+
+            .controls {
+                padding: 0 16px 12px;
+            }
+
+            .grid-sec {
+                padding: 0 16px 60px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                padding: 18px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+  </head>
+  <body>
+
+
+    <nav>
+      <div class="logo2">CardWise</div>
+      <div class="nav-right">
+        <!-- <span class="last-updated" id="lastUpdated"></span> -->
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="切換主題">☀️</button>
+        <div class="toggle-pill">
+          <button class="toggle-btn" onclick="setLang('en')">EN</button>
+          <button class="toggle-btn active" onclick="setLang('zh')">繁中</button>
+        </div>
+      </div>
+    </nav>
+
+
+    <section class="hero">
+      <!-- <div class="eyebrow" id="heroEyebrow">實時 · 香港信用卡</div> -->
+      <h1 id="heroTitle">一眼搵到最啱你嘅信用卡</h1>
+      <p class="hero-sub" id="heroSub">唔使逐間搵，一站幫你比較哂。定期從官方來源更新。</p>
+    </section>
+
+
+    <!-- 🔍 -->
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="si">🔍</span>
+        <input class="search-input" id="searchInput" type="text" placeholder="搜尋信用卡、銀行或優惠..."
+          oninput="renderCards(); document.getElementById('searchClear').classList.toggle('visible', this.value.length > 0)">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear">✕</button>
+      </div>
+      
+      <!-- Filtered by data-badge = "XXXXX" -->
+      <div class="feat-row">
+        <!-- <span class="flabel" id="filterLabel">類別</span> ✦ -->
+        <!-- <button class="featchip" style="font-weight: 500;" data-badge_miles="all" onclick="selFeat(this)"><span data-en="All Featured" data-zh="所有精選">所有精選</span></button> -->
+        <button class="featchip miles" data-badge="miles"    onclick="selFeat(this)">✈️ <span data-en="Best Miles"   data-zh="精選里數">精選里數</span></button>
+        <button class="featchip cashback" data-badge="cashback" onclick="selFeat(this)">💵 <span data-en="Best Cashback" data-zh="現金回贈">現金回贈</span></button>
+        <button class="featchip dining" data-badge="dining"   onclick="selFeat(this)">🍽 <span data-en="Best Dining"   data-zh="精選餐飲">精選餐飲</span></button>
+        <button class="featchip online" data-badge="online"   onclick="selFeat(this)">💻 <span data-en="Best Online"   data-zh="精選網購">精選網購</span></button>
+        <button class="featchip supermarket" data-badge="supermarket"   onclick="selFeat(this)">🛒 <span data-en="Best Supermarket"   data-zh="精選超市">精選超市</span></button>
+      </div>
+      
+      <div class="filter-row">
+        <button class="chip active" data-cat="all" onclick="selCat(this)"><span data-en="All Categories" data-zh="所有類別">所有類別</span></button>
+        <button class="chip" data-cat="miles"    onclick="selCat(this)">✈️ <span data-en="Miles"   data-zh="里數">里數</span></button>
+        <button class="chip" data-cat="travel"   onclick="selCat(this)">✈️ <span data-en="Travel"   data-zh="旅遊">旅遊</span></button>
+        <button class="chip" data-cat="cashback" onclick="selCat(this)">💵 <span data-en="Cashback" data-zh="回贈">回贈</span></button>
+        <button class="chip" data-cat="dining"   onclick="selCat(this)">🍽 <span data-en="Dining"   data-zh="餐飲">餐飲</span></button>
+        <button class="chip" data-cat="shopping" onclick="selCat(this)">🛍️ <span data-en="Shopping" data-zh="購物">購物</span></button>
+        <button class="chip" data-cat="online"   onclick="selCat(this)">💻 <span data-en="Online"   data-zh="網購">網購</span></button>
+        <button class="chip" data-cat="petrol"   onclick="selCat(this)">⛽ <span data-en="Petrol"   data-zh="油站">油站</span></button>
+      </div>
+
+      <div class="fee-row">
+          <button class="fchip active" data-fee="all"       onclick="selFee(this)"><span data-en="All Waivers"        data-zh="所有豁免">所有豁免</span></button>
+          <button class="fchip"        data-fee="lifetime"  onclick="selFee(this)"><span data-en="Lifetime"   data-zh="永久免">永久免</span></button>
+          <button class="fchip"        data-fee="firstyear" onclick="selFee(this)"><span data-en="First year" data-zh="首年免">首年免</span></button>
+          <button class="fchip"        data-fee="twoyears"  onclick="selFee(this)"><span data-en="2 years"    data-zh="首兩年免">首兩年免</span></button>
+      </div>
+
+      <div class="bank-row">
+        <!-- <span class="flabel" id="bankLabel">銀行</span> -->
+        <button class="bchip active" data-bank="all"       onclick="selBank(this)"><span data-en="All Banks" data-zh="所有銀行">所有銀行</span></button>
+        <button class="bchip" data-bank="hsbc"      onclick="selBank(this)"><span data-en="HSBC"   data-zh="匯豐">匯豐</span></button>
+        <button class="bchip" data-bank="boc"       onclick="selBank(this)"><span data-en="BOC"   data-zh="中銀">中銀</span></button>
+        <button class="bchip" data-bank="scb"       onclick="selBank(this)"><span data-en="SCB"   data-zh="渣打">渣打</span></button>
+        <button class="bchip" data-bank="citi"      onclick="selBank(this)"><span data-en="Citi"   data-zh="花旗">花旗</span></button>
+        <button class="bchip" data-bank="hase"      onclick="selBank(this)"><span data-en="HASE"   data-zh="恒生">恒生</span></button>
+        <button class="bchip" data-bank="dbs"       onclick="selBank(this)"><span data-en="DBS"   data-zh="星展">星展</span></button>
+      </div>
+    </div>
+
+
+    <div class="grid-sec">
+      <div class="grid-hdr">
+        <span class="rcount" id="rcount"></span>
+        <!-- <select class="sort-sel" id="sortSel" onchange="renderCards()">
+          <option value="featured" data-en="Featured"     data-zh="精選">精選</option>
+          <option value="cashback" data-en="Best Cashback" data-zh="最高回贈">最高回贈</option>
+          <option value="newest"   data-en="Newest"       data-zh="最新">最新</option>
+        </select> -->
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+
+
+    <div class="moverlay" id="moverlay" onclick="closeMO(event)">
+      <div class="modal"><button class="mclose" onclick="closeM()">✕</button><div class="mbody" id="mbody"></div></div>
+    </div>
+
+
+    <footer>
+      <div class="fleft" id="footerL">數據來源：各銀行官方網站。<br>僅供參考，請向發卡銀行核實最新條款。</div>
+    </footer>
+
+
+    <script>
+    // ── BANK LOGO IMAGE PATHS (from /assets/logos/ folder in repo) ──
+    const LOGO_IMGS = {
+      hsbc:        './assets/logos/hsbc.png',
+      boc:         './assets/logos/boc.png',
+      scb:         './assets/logos/scb.png',
+      citi:        './assets/logos/citi.png',
+      hase:        './assets/logos/hase.png',
+      dbs:         './assets/logos/dbs.png',
+      bea:         './assets/logos/bea.png',
+    };
+
+
+    // ── BANK SVG LOGOS (fallback if image file not found) ──
+    const LOGO_SVGS = {
+      hsbc: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#DB0818"/>
+        <polygon points="4,4 16,16 4,28" fill="white" opacity="0.9"/>
+        <polygon points="28,4 16,16 28,28" fill="white" opacity="0.9"/>
+        <polygon points="4,4 28,4 16,16" fill="#DB0818"/>
+        <polygon points="4,28 28,28 16,16" fill="#DB0818"/>
+      </svg>`,
+      boc: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#AA2036"/>
+        <circle cx="16" cy="16" r="9" fill="none" stroke="white" stroke-width="1.8"/>
+        <line x1="16" y1="7" x2="16" y2="25" stroke="white" stroke-width="1.8"/>
+        <line x1="7" y1="16" x2="25" y2="16" stroke="white" stroke-width="1.8"/>
+        <circle cx="16" cy="16" r="3.5" fill="white"/>
+      </svg>`,
+      scb: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#238500"/>
+        <path d="M9 10 Q9 6 16 6 Q23 6 23 10 L23 22 Q23 26 16 26 Q9 26 9 22 Z" fill="none" stroke="white" stroke-width="1.8"/>
+        <path d="M12 16 L20 16 M16 12 L16 20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+      </svg>`,
+      citi: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#255BE3"/>
+        <path d="M6 16 A10 10 0 0 1 26 16" stroke="#0560A8" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <path d="M6 16 A10 10 0 0 0 26 16" stroke="#E31837" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <rect x="13.5" y="10" width="5" height="12" rx="2.5" fill="white"/>
+      </svg>`,
+      bea: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#7A1010"/>
+        <rect x="7" y="9" width="10" height="14" rx="1.5" fill="none" stroke="white" stroke-width="1.8"/>
+        <line x1="7" y1="16" x2="17" y2="16" stroke="white" stroke-width="1.8"/>
+        <line x1="20" y1="9" x2="25" y2="16" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="25" y1="16" x2="20" y2="23" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>`,
+      hase: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#67B22A"/>
+        <text x="16" y="22" text-anchor="middle" font-family="'PingFang TC','Noto Sans TC',sans-serif" font-size="14" font-weight="700" fill="white">恒</text>
+      </svg>`,
+      dbs: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#FF3939"/>
+        <text x="16" y="21.5" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="10.5" font-weight="900" fill="white" letter-spacing="-0.5">DBS</text>
+      </svg>`,
+      paob: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#F47920"/>
+        <path d="M8 26 L8 9 Q8 7 10 7 L14 7 Q20 7 20 13 Q20 19 14 19 L8 19" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+        <line x1="22" y1="7" x2="22" y2="26" stroke="white" stroke-width="2" stroke-linecap="round"/>
+      </svg>`,
+    };
+
+
+    function nl2br(text) {
+        return (text || '').replace(/\n/g, '<br>');
+    }
+
+
+    // Helper: return an <img> tag using the logo image file; on error, fall back to inline SVG
+    function getLogo(bank, size) {
+      const sz = size || 32;
+      const imgSrc = LOGO_IMGS[bank];
+      const svgFallback = LOGO_SVGS[bank] || '';
+      if (!imgSrc) return svgFallback;
+      // Render <img> tag; onerror swaps to SVG fallback rendered as a data URI via a hidden span trick
+      return `<img src="${imgSrc}" alt="${bank} logo" width="${sz}" height="${sz}"
+        style="width:${sz}px;height:${sz}px;object-fit:contain;border-radius:6px;display:block"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+      /><span style="display:none;width:${sz}px;height:${sz}px;align-items:center;justify-content:center">${svgFallback}</span>`;
+    }
+
+
+    // Legacy alias (used by existing renderCards / openM calls)
+    const LOGOS = new Proxy({}, { get: (_, bank) => getLogo(bank, 32) });
+
+
+    // ── BANK COLOUR THEMES ──
+    // hlDark: solid deep-tinted bg for dark mode highlight box
+    // hlStrong: bright accent colour for <strong> text inside highlight (dark mode)
+    const BTHEME = {
+      hsbc:        { p:'#FE0003', r:254, g:0,   b:3,  hlStrong:'#ff6b6b' },
+      boc:         { p:'#AA2036', r:170, g:32,  b:54,  hlStrong:'#ff8899' },
+      scb:         { p:'#238500', r:35,  g:133, b:0,   hlStrong:'#a3f070' },
+      citi:        { p:'#255BE3', r:5,   g:96,  b:168, hlStrong:'#60b4ff' },
+      bea:         { p:'#7A1010', r:122, g:16,  b:16,  hlStrong:'#fca5a5' },
+      hase:        { p:'#40992A', r:103, g:178, b:42,  hlStrong:'#a3e060' },
+      dbs:         { p:'#FF3939', r:255, g:57,  b:57,  hlStrong:'#ff9090' },
+      paob:        { p:'#F47920', r:244, g:121, b:32,  hlStrong:'#fdba74' },
+    };
+
+
+    function getBG(bank, isDark) {
+      const t = BTHEME[bank] || BTHEME.hsbc;
+      const {r,g,b} = t;
+      if (isDark) {
+        return {
+          p:        t.p,
+          // Logo wrap: faint tint
+          bg:       `rgba(${r},${g},${b},0.18)`,
+          // Card border: visible but subtle
+          bd:       `rgba(${r},${g},${b},0.38)`,
+          bg2:      `rgb(198 198 198 / 10%)`,                 // card-2ndCard-bg
+
+          // Highlight box: solid dark base strongly tinted with bank colour
+          hl:       `rgba(${r},${g},${b},0.22)`,
+          hlBorder: `rgba(${r},${g},${b},0.55)`,              //  card-2ndCard-subCard-border
+          hlBorder2: `rgba(${r},${g},${b},0.55)`,             //  card-1stCard-border
+          hlBorder3: `1px solid rgb(231 234 240 / 25%)`,      //  card-2ndCard-border
+
+          // Text inside highlight
+          hlStrong:  t.hlStrong,
+        };
+      } else {
+        return {
+          p:        t.p,
+
+          bg:       `rgba(${r},${g},${b},0.07)`,
+          bg2:      `rgb(198 198 198 / 10%)`,                 // card-2ndCard-bg
+
+          bd:       `rgba(${r},${g},${b},0.22)`,
+
+          hl:       `rgba(${r},${g},${b},0.03)`,      //  background
+          hlBorder: `rgba(${r},${g},${b},0.6)`,               //  card-2ndCard-subCard-border
+          hlBorder2: `rgba(${r},${g},${b},0.15)`,             //  card-1stCard-border
+          hlBorder3: `1px solid rgb(231 234 240 / 100%)`,     //  card-2ndCard-border
+
+          hlStrong:  t.p,
+        };
+      }
+    }
+
+
+    // ── CARDS DATA ──
+    const CARDS = [
+      { 
+      }
+    ];
+
+
+    // ── STATE ──
+    let lang = 'zh';
+    let cat  = 'all';
+    let bank = 'all';
+    let dark = false;
+
+
+    // ── THEME ──
+    function toggleTheme() {
+      dark = !dark;
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      document.getElementById('themeBtn').textContent = dark ? '🌙' : '☀️';
+      renderCards();
+    }
+
+
+    // ── LANGUAGE ──
+    const TEXTS = {
+      // heroEyebrow: { en:'Live · Hong Kong Credit Cards', zh:'實時 · 香港信用卡' },
+      heroTitle:   { en:'All Credit Cards At a Glance', zh:'一眼搵到最啱你嘅信用卡' },
+      heroSub:     { en:'Compare. Choose. Apply. All from official sources.', zh:'唔使逐間搵，一站幫你比較哂。定期從官方來源更新。' },
+      statCL:      { en:'Cards tracked', zh:'追蹤信用卡' },
+      statBL:      { en:'Banks', zh:'銀行' },
+      statDL:      { en:'Active deals', zh:'進行中優惠' },
+      filterLabel: { en:'Category', zh:'類別' },
+      bankLabel:   { en:'Bank', zh:'銀行' },
+      footerL:     { en:'Data sourced from official bank websites.<br>For reference only. Always verify with the issuing bank.', zh:'數據來源：各銀行官方網站。<br>僅供參考，請向發卡銀行核實最新條款。' }
+    };
+
+
+    function setLang(l) {
+      lang = l;
+      document.documentElement.lang = l === 'zh' ? 'zh-HK' : 'en';
+      document.querySelectorAll('.toggle-btn').forEach(b =>
+        b.classList.toggle('active', (l==='en'&&b.textContent==='EN')||(l==='zh'&&b.textContent==='繁中'))
+      );
+      Object.entries(TEXTS).forEach(([id,v]) => { const el=document.getElementById(id); if(el) el.innerHTML=v[l]; });
+      document.querySelectorAll('[data-en]').forEach(el => el.textContent = l==='zh' ? el.dataset.zh : el.dataset.en);
+      // document.querySelectorAll('#sortSel option').forEach(o => o.textContent = l==='zh' ? o.dataset.zh : o.dataset.en);
+      document.getElementById('searchInput').placeholder = l==='zh' ? '搜尋信用卡、銀行或優惠...' : 'Search cards, banks or benefits...';
+      renderCards();
+    }
+
+
+    // ── FILTERS ──
+    function selFeat(btn) {
+      const wasActive = btn.classList.contains('active');
+
+      // Deselect all feat chips
+      document.querySelectorAll('.featchip').forEach(b => b.classList.remove('active'));
+
+      if (!wasActive) {
+        btn.classList.add('active');
+
+        // Reset filter-row → activate "All Categories"
+        document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+        document.querySelector('.chip[data-cat="all"]').classList.add('active');
+
+        // Reset fee-row → activate "All Waivers"
+        document.querySelectorAll('.fchip').forEach(b => b.classList.remove('active'));
+        document.querySelector('.fchip[data-fee="all"]').classList.add('active');
+
+        // Reset bank-row → activate "All Banks"
+        document.querySelectorAll('.bchip').forEach(b => b.classList.remove('active'));
+        document.querySelector('.bchip[data-bank="all"]').classList.add('active');
+      }
+
+      renderCards();
+    }
+
+
+    function selCat(btn) {
+      const isAll = btn.dataset.cat === 'all';
+      const allBtn = document.querySelector('.chip[data-cat="all"]');
+
+      document.querySelectorAll('.featchip').forEach(b => b.classList.remove('active'));
+      
+      if (isAll) {
+        document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+        allBtn.classList.add('active');
+      } else {
+        btn.classList.toggle('active');
+        const anySelected = [...document.querySelectorAll('.chip:not([data-cat="all"])')].some(b => b.classList.contains('active'));
+        if (anySelected) {
+          allBtn.classList.remove('active');
+        } else {
+          allBtn.classList.add('active');
+        }
+      }
+
+      renderCards();
+    }
+
+
+    function selFee(btn) {
+      const isAll = btn.dataset.fee === 'all';
+      const allBtn = document.querySelector('.fchip[data-fee="all"]');
+
+      document.querySelectorAll('.featchip').forEach(b => b.classList.remove('active'));
+      
+      if (isAll) {
+        // Clicking "All Banks" — reset everything
+        document.querySelectorAll('.fchip').forEach(b => b.classList.remove('active'));
+        allBtn.classList.add('active');
+      } else {
+        // Toggle the clicked bank
+        btn.classList.toggle('active');
+        // Deselect "All Banks" if any specific bank is now active
+        const anySelected = [...document.querySelectorAll('.fchip:not([data-fee="all"])')].some(b => b.classList.contains('active'));
+        if (anySelected) {
+          allBtn.classList.remove('active');
+        } else {
+          // Nothing selected — fall back to "All Banks"
+          allBtn.classList.add('active');
+        }
+      }
+
+      renderCards();
+    }
+
+
+    function selBank(btn) {
+      const isAll = btn.dataset.bank === 'all';
+      const allBtn = document.querySelector('.bchip[data-bank="all"]');
+
+      document.querySelectorAll('.featchip').forEach(b => b.classList.remove('active'));
+      
+      if (isAll) {
+        // Clicking "All Banks" — reset everything
+        document.querySelectorAll('.bchip').forEach(b => b.classList.remove('active'));
+        allBtn.classList.add('active');
+      } else {
+        // Toggle the clicked bank
+        btn.classList.toggle('active');
+        // Deselect "All Banks" if any specific bank is now active
+        const anySelected = [...document.querySelectorAll('.bchip:not([data-bank="all"])')].some(b => b.classList.contains('active'));
+        if (anySelected) {
+          allBtn.classList.remove('active');
+        } else {
+          // Nothing selected — fall back to "All Banks"
+          allBtn.classList.add('active');
+        }
+      }
+
+      renderCards();
+    }
+
+
+    function clearSearch() {
+      const input = document.getElementById('searchInput');
+      input.value = '';
+      document.getElementById('searchClear').classList.remove('visible');
+      renderCards();
+    }
+
+
+    // ── CAT LABELS ──
+    const CATLBL = { dining:{en:'🍽 Dining',zh:'🍽 餐飲'}, miles:{en:'✈️ Miles',zh:'✈️ 里數'}, travel:{en:'✈️ Travel',zh:'✈️ 旅遊'}, shopping:{en:'🛍️ Shopping',zh:'🛍️ 購物'}, cashback:{en:'💵 Cashback',zh:'💵 回贈'}, online:{en:'💻 Online',zh:'💻 網購'}, petrol:{en:'⛽ Petrol',zh:'⛽ 油站'} };
+
+
+    // ── RENDER ──
+    // Helper: strip content inside [...] brackets from highlight text
+    function stripBrackets(s) {
+      return s.replace(/\[[^\]]*\]/g, '').replace(/\s{2,}/g, ' ').trim();
+    }
+
+
+    // Helper: split highlight into Welcome / Rewards parts for tile display
+    function splitHighlight(hl, themeColor, bens, lang) {
+      const cleaned = stripBrackets(hl);
+      const parts = cleaned.split('|').map(s => s.trim()).filter(Boolean);
+
+      const welcomeLabel = lang === 'zh' ? '迎新優惠' : 'WELCOME OFFER';
+      const rewardsLabel = lang === 'zh' ? '獎賞' : 'REWARDS';
+
+      // Count welcome/reward bens for helptext (change 3)
+      const bensList = (bens && bens[lang]) || (bens && bens.en) || [];
+      const welcomeCount = bensList.filter(b => b.c === 'w').length;
+      const rewardCount  = bensList.filter(b => b.c === 'r').length;
+      const moreWelcome  = welcomeCount > 1
+        ? `<span style="font-size:0.7rem;opacity:0.65;margin-left:4px">+${welcomeCount - 1} ${lang==='zh'?'更多':'more'}</span>` : '';
+      const moreRewards  = rewardCount  > 1
+        ? `<span style="font-size:0.7rem;opacity:0.65;margin-left:4px">+${rewardCount  - 1} ${lang==='zh'?'更多':'more'}</span>` : '';
+
+      return parts.map((part, idx) => {
+        // Detect section — also match Chinese labels (迎新 / 獎賞)
+        const isWelcome = /welcome/i.test(part) || /迎新/.test(part);
+        const isRewards = /reward/i.test(part)  || /獎賞/.test(part);
+        const sectionLabel = isWelcome ? welcomeLabel : isRewards ? rewardsLabel : '';
+        const helpText     = isWelcome ? moreWelcome  : isRewards ? moreRewards  : '';
+
+        // Strip inline <strong>Welcome:</strong> / <strong>Rewards:</strong> / Chinese equivalents prefix
+        const content = part.replace(/<strong>[^<]*<\/strong>\s*/i, '').trim();
+
+        const lineBreak = idx > 0 ? '<div style="margin-top:15px"></div>' : '';
+        const labelHtml = sectionLabel
+          ? `<div style="font-size:0.80rem;font-weight:700;letter-spacing:0.05em;color:${themeColor};margin-bottom: 6px;opacity:0.85;display:flex;align-items:center">${sectionLabel}${helpText}</div>`
+          : '';
+        return `${lineBreak}${labelHtml}<span>${content}</span>`;
+      }).join('');
+    }
+
+
+    function renderCards() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      
+      // --- Detect active feat chip ---
+      const activeFeat = document.querySelector('.featchip.active');
+      const featBadge = activeFeat ? activeFeat.dataset.badge : null;
+
+      let list = CARDS.filter(c => {
+
+        const selectedCats = [...document.querySelectorAll('.chip:not([data-cat="all"]).active')].map(b => b.dataset.cat);
+        const cm = selectedCats.length === 0 || c.cats.some(ct => selectedCats.includes(ct));
+
+        const selectedBanks = [...document.querySelectorAll('.bchip:not([data-bank="all"]).active')].map(b => b.dataset.bank);
+        const bm = selectedBanks.length === 0 || selectedBanks.includes(c.bank);
+
+        const feeText = (lang === 'zh' ? c.annualFee.zh : c.annualFee.en || '').toLowerCase();
+        const FEE_KEYWORDS = {
+          lifetime:  { en: ['lifetime'], zh: ['永久'] },
+          firstyear: { en: ['first year'], zh: ['首年'] },
+          twoyears:  { en: ['2 years'], zh: ['首兩'] },
+        };
+
+        const selectedFees = [...document.querySelectorAll('.fchip:not([data-fee="all"]).active')].map(b => b.dataset.fee);
+        const fm = selectedFees.length === 0 || selectedFees.some(key =>
+          (FEE_KEYWORDS[key]?.[lang === 'zh' ? 'zh' : 'en'] || []).some(kw => feeText.includes(kw))
+        );
+
+        const bkTag   = (c.bank).toLowerCase();
+        const anFee   = (c.annualFee[lang]||c.bankName.en).toLowerCase();
+        const nm      = (c.name[lang]||c.name.en).toLowerCase();
+        const bk      = (c.bankName[lang]||c.bankName.en).toLowerCase();
+        const nmAlt   = (lang==='zh' ? c.name.en    : c.name.zh    ||'').toLowerCase();
+        const bkAlt   = (lang==='zh' ? c.bankName.en : c.bankName.zh||'').toLowerCase();
+        const bensTxt = ((c.bens&&c.bens.en)||[]).map(b=>b.t).concat(
+                        ((c.bens&&c.bens.zh)||[]).map(b=>b.t)
+                      ).join(' ').toLowerCase();
+
+        const baseMatch = cm && bm && fm &&
+          (!q || nm.includes(q) || bk.includes(q) || nmAlt.includes(q) ||
+                bkAlt.includes(q) || bensTxt.includes(q) || bkTag.includes(q) || anFee.includes(q));
+
+        if (!baseMatch) return false;
+
+        // ── feat-row filter layer ──
+        if (!featBadge) return true;                            // nothing selected → show all
+        // if (featBadge === 'all') return c[`badge_${featBadge}`] !== 'unknown';  // "All Featured"
+
+        return typeof c[`badge_${featBadge}`] === 'string' && c[`badge_${featBadge}`].includes(featBadge);
+        
+      });
+
+      // ── feat-row sorting ──
+      if (featBadge && featBadge !== 'all') {
+        
+        const getBadgeNum = (badgeValue) => {
+            if (typeof badgeValue !== 'string') return Infinity;
+            const match = badgeValue.match(/(\d+)$/);
+            return match ? parseInt(match[1], 10) : 0;
+        };
+
+        list = list.sort((a, b) => {
+            const numA = getBadgeNum(a[`badge_${featBadge}`]);
+            const numB = getBadgeNum(b[`badge_${featBadge}`]);
+            return numA - numB;
+        });
+      }
+
+      // document.getElementById('rcount').innerHTML = `<strong>${list.length}</strong> ${lang==='zh'?'張信用卡':'cards'}`;
+
+      // Count total and per bank
+      const total = list.length;
+
+      const bankCount = list.reduce((acc, card) => {
+          const key = card.bank || 'others';
+          acc[key] = (acc[key] || 0) + 1;
+          return acc;
+      }, {});
+
+      // Define desired bank display order
+      const desiredOrder = ['hsbc', 'boc', 'scb', 'citi', 'hase', 'dbs'];
+
+      const getBankDisplayName = (bankKey) => {
+          if (!bankKey || bankKey === 'others') 
+              return lang === 'zh' ? '其他' : 'Others';
+
+          const bankNames = {
+              'hsbc': { en: 'HSBC',     zh: '匯豐' },
+              'boc':  { en: 'BOC',      zh: '中銀' },
+              'scb':  { en: 'SCB',      zh: '渣打' },
+              'citi': { en: 'CITI',     zh: '花旗' },
+              'hase': { en: 'HASE',     zh: '恒生' },
+              'dbs':  { en: 'DBS',      zh: '星展' },
+          };
+
+          const names = bankNames[bankKey.toLowerCase()] || { 
+              en: bankKey.toUpperCase(), 
+              zh: bankKey.toUpperCase() 
+          };
+          
+          return lang === 'zh' ? names.zh : names.en;
+      };
+
+      // Generate HTML with custom order
+      let html = `
+          <div style="text-align: right;">
+              <strong>${total}</strong> ${lang === 'zh' ? '張信用卡' : 'cards'}
+              
+              ${Object.keys(bankCount).length > 0 ? `
+              <div class="bank-counts" style="margin-top: 8px; font-size: 0.82rem; opacity: 0.85; 
+                                            display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 16px;">
+                  ${desiredOrder
+                      .filter(bank => bankCount[bank] > 0)   // only show banks that have cards
+                      .map(bank => {
+                          const count = bankCount[bank];
+                          const name = getBankDisplayName(bank);
+                          return `
+                              <span style="display: inline-flex; align-items: center; white-space: pre;">
+                                  <strong class="bank-count-num">${count}</strong>
+                                  <span style="margin-left: 6px;">${name}</span>
+                              </span>
+                          `;
+                      }).join('')}
+              </div>` : ''}
+          </div>
+      `;
+
+
+      document.getElementById('rcount').innerHTML = html;
+
+
+      const grid = document.getElementById('grid');
+      if(!list.length) {
+        grid.innerHTML = `<div class="nores"><div class="ico">🔍</div><p>${lang==='zh'?'找不到符合條件的信用卡':'No cards match your filters'}</p></div>`;
+        return;
+      }
+
+
+      grid.innerHTML = list.map((c,i) => {
+      const nm  = c.name[lang]||c.name.en;
+      const bk  = c.bankName[lang]||c.bankName.en;
+      const hl  = c.highlight[lang]||c.highlight.en;
+      const fee = nl2br(c.annualFee[lang]||c.annualFee.en);
+      const ft = nl2br(c.feeType[lang]||c.feeType.en);
+      
+      const mls = c.miles[lang]||c.miles.en;
+      const mlsParts = (mls || "").split(';').map(part => part.trim());
+      const mls1 = mlsParts[0] || "";   // First value (e.g. main miles)
+      const mls2 = mlsParts[1] || "";   // Second value (optional)
+
+      const cb  = nl2br(c.cashback[lang]||c.cashback.en);
+
+      const sl  = c.srcL[lang]||c.srcL.en;
+      const t   = getBG(c.bank, dark);
+      const logo= LOGOS[c.bank]||'';
+      
+      const subheadStyle = `font-size:0.8rem;font-weight:700;letter-spacing:0.05em;color:${t.hlStrong};margin-bottom: 6px;border-bottom:0px solid ${t.bd};opacity:0.85;display:flex;align-items:center`;
+      const labelHtml = 'font-size:0.75rem;font-weight:700;letter-spacing:0.05em;color:${themeColor};margin-bottom: 6px;opacity:0.85;display:flex;align-items:center';
+      const contentsHtml = 'font-size: 0.85rem; font-weight: 450; line-height: 1.9';
+
+      const bdg_miles = c.badge_miles
+      const bdg_cashback = c.badge_cashback
+
+      const tags = c.cats.map(ct=>`<span class="ctag ${ct}">${CATLBL[ct]?.[lang]||ct}</span>`).join('');
+      const sd = c.src==='moneyhero'?'mh':c.src==='xiaosi'?'xs':'bk';
+      const cardId = `card-${c.id}`;
+
+      // Change 3+4+5: split highlight into labelled sections, strip brackets
+      const hlBody = splitHighlight(hl, t.hlStrong, c.bens, lang);
+
+      // Change 6: if no benefits at all, show "Read more on official website"
+      const bensList = (c.bens && c.bens[lang]) || (c.bens && c.bens.en) || [];
+      const noBens   = bensList.length === 0;
+      const readMore = noBens
+        ? `<div style="font-size:0.78rem;color:${t.hlStrong};opacity:0.8;margin-top:4px">
+              ${lang==='zh' ? '請瀏覽官方網站了解更多' : 'Read more on official website'} ↗
+            </div>` : '';
+
+      // Change 6: card image top-right (only if image_url present)
+      // Card image column (left) — placeholder width keeps layout stable when no image
+      const imgCol = c.imageUrl
+        ? `<div class="card-img-col"><img src="${c.imageUrl}" alt="${nm}"></div>`
+        : `<div class="card-img-placeholder"></div>`;
+
+      const cleanedFt = ft.toLowerCase().includes("balance") 
+        ? ft.replace(/balance of HKD/gi, "").trim().replace(/\s+/g, " ") 
+        : "";
+
+
+      return `<div class="card" id="${cardId}" style="border-top: 2.5px solid ${t.hlBorder}; animation-delay:${i*0.042};box-shadow: 0px 6px 12px 0px rgb(0 0 0 / 25%)" onclick="openM(${c.id})">
+        
+
+      <span style="padding: 15px 0px 0px"></span>    
+      
+
+      ${(() => {
+        const badgeConfig = {
+            miles1: {
+                zh: `<span class="badge miles">✈️ 全場最佳里數回贈</span>`,
+                en: `<span class="badge miles">✈️ Best Miles</span>`
+            },
+            miles2: {
+                zh: `<span class="badge miles">✈️ 渣打最佳海外里數回贈</span>`,
+                en: `<span class="badge miles">✈️ SCB Best Overseas Miles</span>`
+            },
+            miles5: {
+                zh: `<span class="badge miles">✈️ 匯豐最佳里數回贈</span>`,
+                en: `<span class="badge miles">✈️ HSBC Best Miles</span>`
+            },
+            miles6: {
+                zh: `<span class="badge miles">✈️ 星展最佳里數回贈</span>`,
+                en: `<span class="badge miles">✈️ DBS Best Miles</span>`
+            },
+            miles7: {
+                zh: `<span class="badge miles">✈️ 花旗最佳本地里數回贈</span>`,
+                en: `<span class="badge miles">✈️ Citi Best Local Miles</span>`
+            },
+            miles9: {
+                zh: `<span class="badge miles">✈️ 花旗最佳海外里數回贈</span>`,
+                en: `<span class="badge miles">✈️ Citi Best Overseas Miles</span>`
+            },
+            cashback1: {
+                zh: `<span class="badge cashback">💵 全場最佳現金回贈</span>`,
+                en: `<span class="badge cashback">💵 Best Cashback</span>`
+            },
+            dining1: {
+                zh: `<span class="badge dining">🍽 全場最佳餐飲回贈</span>`,
+                en: `<span class="badge dining">🍽 Best Dining Rewards</span>`
+            },
+            online1: {
+                zh: `<span class="badge online">💻 全場最佳一般網購回贈</span>`,
+                en: `<span class="badge online">💻 Best General Online Rewards</span>`
+            },
+            supermarket1: {
+                zh: `<span class="badge supermarket">🛒 全場最佳超市回贈</span>`,
+                en: `<span class="badge supermarket">🛒 Best Supermarket Rewards</span>`
+            },
+            others1: {  // Citi cash back ; cashback5
+                zh: `<span class="badge cashback">💵 全年無上限自動回贈</span>`,
+                en: `<span class="badge cashback">💵 All year no cap auto rebate</span>`
+            },
+            others2: {  // scb smart ; cashback7
+                zh: `<span class="badge cashback">💵 迎新HK$800現金回贈</span>`,
+                en: `<span class="badge cashback">💵 Welcome Offer HKD800 cashback</span>`
+            },
+            others3: {  // scb cathay mastercard
+                zh: `<span class="badge miles">✈️ 迎新高達40k里數</span>`,
+                en: `<span class="badge miles">✈️ Welcome Offer up to 40k miles</span>`
+            },
+            others4: {  // hase travel+ ; cashback8
+                zh: `<span class="badge cashback">💵 外幣簽賬高達7%回贈</span>`,
+                en: `<span class="badge cashback">💵 FCY spending up to 7% rebate</span>`
+            },
+            others5: {  // hase enjoy visa ; supermarket8
+                zh: `<span class="badge cashback">💵 全年高達4x yuu積分</span>`,
+                en: `<span class="badge cashback">💵 Up to 4x yuu Points</span>`
+            },
+            others6: {  // scb simply cash ; cashback6
+                zh: `<span class="badge cashback">💵 迎新HK$600現金回贈</span>`,
+                en: `<span class="badge cashback">💵 Welcome Offer HKD600 cashback</span>`
+            },
+            others7: {  // boc bliss ; cashback2
+                zh: `<span class="badge cashback">💵 迎新HK$800現金回贈</span>`,
+                en: `<span class="badge cashback">💵 Welcome Offer HKD800 cashback</span>`
+            },
+            others8: {  // boc chill ; cashback9
+                zh: `<span class="badge cashback">💵 指定項目高達8%現金回贈</span>`,
+                en: `<span class="badge cashback">💵 Up to 8% cashback</span>`
+            },
+            others9: {  // citi rewards ; cashback10
+                zh: `<span class="badge cashback">💵 迎新HK$1200現金回贈</span>`,
+                en: `<span class="badge cashback">💵 Welcome Offer HKD1200 cashback</span>`
+            },
+            others10: {  // hsbc pulse union ; cashback11
+                zh: `<span class="badge cashback">💵 內地/澳門高達4.4%回贈</span>`,
+                en: `<span class="badge cashback">💵 mainland/macau up to 4.4% cashback</span>`
+            },
+            others11: {  // citi octopus ; cashback12
+                zh: `<span class="badge cashback">💵 自駕5%交通工具高達15%回贈</span>`,
+                en: `<span class="badge cashback">💵 transportation up to 15% cashback</span>`
+            },
+            others12: {  // hsbc red ; cashback13
+                zh: `<span class="badge cashback">💵 指定項目高達8%回贈</span>`,
+                en: `<span class="badge cashback">💵 Up to 8% rebate</span>`
+            },
+            others13: {  // scb priority banking ; miles3
+                zh: `<span class="badge miles">✈️ 迎新高達100k里數</span>`,
+                en: `<span class="badge miles">✈️ Welcome Offer up to 100k miles</span>`
+            },
+            others14: {  // hsbc visa gold student ; cashback14
+                zh: `<span class="badge cashback">💵 交學費高達2.4%回贈</span>`,
+                en: `<span class="badge cashback">💵 tuition fees up to 2.4% rebate</span>`
+            }
+            
+        };
+
+        // Check which badge is active
+        let activeBadge = null;
+        if (c.badge_miles === "miles1") activeBadge = "miles1";
+        else if (c.badge_miles === "miles2") activeBadge = "miles2";
+        else if (c.badge_miles === "miles5") activeBadge = "miles5";
+        else if (c.badge_miles === "miles6") activeBadge = "miles6";
+        else if (c.badge_miles === "miles7") activeBadge = "miles7";
+        else if (c.badge_miles === "miles9") activeBadge = "miles9";
+
+        else if (c.badge_cashback === "cashback1") activeBadge = "cashback1";
+
+        else if (c.badge_dining === "dining1") activeBadge = "dining1";
+
+        else if (c.badge_online === "online1") activeBadge = "online1";
+
+        else if (c.badge_supermarket === "supermarket1") activeBadge = "supermarket1";
+
+        else if (c.badge_hot === "others1") activeBadge = "others1";
+        else if (c.badge_hot === "others2") activeBadge = "others2";
+        else if (c.badge_hot === "others3") activeBadge = "others3";
+        else if (c.badge_hot === "others4") activeBadge = "others4";
+        else if (c.badge_hot === "others5") activeBadge = "others5";
+        else if (c.badge_hot === "others6") activeBadge = "others6";
+        else if (c.badge_hot === "others7") activeBadge = "others7";
+        else if (c.badge_hot === "others8") activeBadge = "others8";
+        else if (c.badge_hot === "others9") activeBadge = "others9";
+        else if (c.badge_hot === "others10") activeBadge = "others10";
+        else if (c.badge_hot === "others11") activeBadge = "others11";
+        else if (c.badge_hot === "others12") activeBadge = "others12";
+        else if (c.badge_hot === "others13") activeBadge = "others13";
+        else if (c.badge_hot === "others14") activeBadge = "others14";
+
+        if (!activeBadge || !badgeConfig[activeBadge]) return '';
+
+        const text = badgeConfig[activeBadge][lang] || badgeConfig[activeBadge].en;
+
+        return `
+          <div style="padding: 0px 20px 5px 0px; margin-left: auto;">
+            ${text}
+          </div>`;
+
+      })()}
+
+
+      <div class="card-hdr">
+        ${imgCol}
+        <div class="cname">${nm}</div>
+      </div>
+
+
+      <div class="rhigh" style="background: ${t.hl}; box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 10%); border: 1px solid ${t.hlBorder2}">
+        <span class="ri">${c.hIcon}</span>
+        <span class="rt" style="color: var(--text); line-height: 1.8; font-weight: 450; letter-spacing: 0.05em">${hlBody}${readMore}</span>
+      </div>
+      
+
+      <div class="cinfo-row" style="border: ${t.hlBorder3}; display: flex; background: ${t.bg2}; box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 10%)">
+
+        <div class="cinfo-cell"style="; border-right: 0px solid ${t.hlBorder}; display: flex">                                                            <!-- 年薪 -->
+                                                                                                                                                            
+          <span class="cinfo-label" style="${subheadStyle}" >${lang==='zh'?'年薪要求 (港幣)':'ELIGIBILITY (HKD)'}</span>
+          <span class="cinfo-value" style="${contentsHtml}">
+            ${(() => {
+              if (ft === "N/A") {
+                return lang === 'zh' 
+                  ? "無年薪要求"
+                  : "No income requirement";
+              }
+
+              const isBalance = ft.toLowerCase().includes('balance');
+              const value = isBalance ? cleanedFt : ft;
+
+              if (lang === 'zh') {
+                return isBalance 
+                  ? `全面理財總值 ≥<br>港幣${value}元`
+                  : `$ ${value}`;
+              } else {
+                return isBalance 
+                  ? `Balance ≥<br>$ ${value}`
+                  : `Annual income ≥<br> $ ${value}`;
+              }
+            })()}
+          </span>
+        
+        </div>
+            
+
+        <div class="cinfo-cell"style=";border-right:0px solid ${t.hlBorder};display: flex">                                                               <!-- 年費 -->
+                                                                                                                                                              
+          <span class="cinfo-label" style="${subheadStyle}">${lang==='zh'?'年費 (港幣)':'ANNUAL FEE (HKD)'}</span>
+          <span class="cinfo-value" style="${contentsHtml}">${fee}</span>
+
+        </div>
+
+
+        ${mls && mls !== "unknown" ? `
+          <div class="cinfo-cell"style=";border-right:0px solid ${t.hlBorder};display: flex">     <!-- 里數 -->  
+                                                                                                                                                                              
+            <span class="cinfo-label" style="${subheadStyle}" >${lang==='zh'?'里數低至 (港幣)':'HKD / MILES'}</span>
+            <span class="cinfo-value" style="${contentsHtml}">
+              ${(() => {
+                if (lang === 'zh') {
+                  return `本地 $ ${mls1} / 里<br>海外 $ ${mls2} / 里`;
+                } else {
+                  return `Local ≥ $ ${mls1}<br>Overseas ≥ $ ${mls2}`;
+                }
+              })()}
+            </span>
+          </div>
+        ` : ''}
+          
+                                                    
+        ${cb && cb !== "unknown" ? `
+          <div class="cinfo-cell"style=";border-right:0px solid ${t.hlBorder};display: flex">                                                             <!-- 回贈 -->  
+            <span class="cinfo-label" style="${subheadStyle}" >${lang==='zh'?'回贈高達':'Cashback'}</span>
+            <span class="cinfo-value" style="${contentsHtml}">
+              ${(() => {
+                if (lang === 'zh') {
+                  return `${cb}`;
+                } else {
+                  return `${cb}`;
+                }
+              })()}
+            </span>
+          </div>
+        ` : ''}
+
+      </div>
+
+
+      <div class="cats">${tags}</div>
+
+
+      <div class="cfoot">
+        <span class="stag"><span class=" ${sd}">${logo}</span>${sl}</span>
+        <span class="vbtn" style="color: ${t.p}; border-color: ${t.p}; background: ${t.hl}; border: 1px solid ${t.hlBorder}">${lang==='zh'?'查看詳情':'View Details'} →</span>
+      </div>
+
+    </div>`;
+
+    }).join('');
+    }
+
+
+    // ── MODAL ──
+    function openM(id) {
+      const c = CARDS.find(x=>x.id===id);
+      if(!c) return;
+      const nm  = c.name[lang]||c.name.en;
+      const bk  = c.bankName[lang]||c.bankName.en;
+      const fee = nl2br(c.annualFee[lang]||c.annualFee.en);
+      const ft = nl2br(c.feeType[lang]||c.feeType.en);
+      
+      const mls = c.miles[lang]||c.miles.en;
+      const mlsParts = (mls || "").split(';').map(part => part.trim());
+      const mls1 = mlsParts[0] || "";   // First value (e.g. main miles)
+      const mls2 = mlsParts[1] || "";   // Second value (optional)
+
+      const cb  = nl2br(c.cashback[lang]||c.cashback.en);
+
+      const bens= c.bens[lang]||c.bens.en;
+      const t   = getBG(c.bank, dark);
+      const logo= LOGOS[c.bank]||'';
+
+      const al = lang==='zh'?'立即申請':'Apply Now';
+      const cl = lang==='zh'?'關閉':'Close';
+      const fl = lang==='zh'?'年費':'Annual Fee';
+      const welcomeLabel = lang==='zh' ? '迎新優惠' : 'WELCOME OFFER';
+      const rewardsLabel = lang==='zh' ? '獎賞' : 'REWARDS';
+      
+      const bdg_miles = c.badge_miles
+      const bdg_cashback = c.badge_cashback
+
+      // Change 9: card image top-right of modal header
+      const modalImgHtml = c.imageUrl
+        ? `<div style="flex-shrink:0;display:flex;align-items:center">
+            <img src="${c.imageUrl}" alt="${nm}" style="height:72px;width:auto;max-width:120px;object-fit:contain;border-radius:10px;display:block">
+          </div>`
+        : `<div style="width:80px;flex-shrink:0"></div>`;
+
+      // Change 7: group benefits under WELCOME OFFER / REWARDS subheadings
+      const welcomeBens = bens.filter(b => b.c === 'w');
+      const rewardBens  = bens.filter(b => b.c === 'r');
+
+      // Change 3: strip brackets from benefit text
+      const cleanBen = t => stripBrackets(t);
+
+      // Change 3: helptext if more than 1 item (modal shows all, but label hints at count)
+      const wLabel = welcomeLabel + (welcomeBens.length > 1 ? ` <span style="font-size: 0.7rem; font-weight: 500; opacity: 0.85; padding: 4px">(${welcomeBens.length})</span>` : '');
+      const rLabel = rewardsLabel + (rewardBens.length  > 1 ? ` <span style="font-size: 0.7rem; font-weight: 500; opacity: 0.85; padding: 4px">(${rewardBens.length})</span>`  : '');
+
+      const subheadStyle = `font-size:0.8rem;font-weight:700;letter-spacing:0.05em;color:${t.hlStrong};margin-bottom: 6px;border-bottom:0px solid ${t.bd};opacity:0.85;display:flex;align-items:center`;
+      const labelHtml = 'font-size:0.75rem;font-weight:700;letter-spacing:0.05em;color:${themeColor};margin-bottom: 6px;opacity:0.85;display:flex;align-items:center';
+      const contentsHtml = 'font-size: 0.85rem; font-weight: 450; line-height: 1.9';
+
+      const cleanedFt = ft.toLowerCase().includes("balance") 
+        ? ft.replace(/balance of HKD/gi, "").trim().replace(/\s+/g, " ") 
+        : "";
+
+      let bensHtml = '';
+      if (welcomeBens.length) {
+        bensHtml += `<div style="${subheadStyle}">${wLabel}</div>`;
+        bensHtml += welcomeBens.map(b=>`<div class="bitem"><span class="bico">${b.i}</span><span style="display: inline-flex; align-items: center;">${cleanBen(b.t)}</span></div>`).join('');
+      }
+      if (rewardBens.length) {
+        bensHtml += `<div style="${subheadStyle}; margin-top: 14px">${rLabel}</div>`;
+        bensHtml += rewardBens.map(b=>`<div class="bitem"><span class="bico">${b.i}</span><span style="display: inline-flex; align-items: center;">${cleanBen(b.t)}</span></div>`).join('');
+      }
+      // Fallback if no benefits or icons aren't categorised
+      if (!bensHtml && bens.length) {
+        bensHtml = bens.map(b=>`<div class="bitem"><span class="bico">${b.i}</span><span>${cleanBen(b.t)}</span></div>`).join('');
+      }
+      // Change 6: no benefits at all → show read more text
+      if (!bensHtml) {
+        const readMoreModal = lang==='zh' ? '請瀏覽以下官方網站了解更多詳情。' : 'Please visit the official website below to read more details.';
+        bensHtml = `<div style="padding:14px 0;font-size:0.86rem;color:var(--text);line-height:1.7">
+          <span style="margin-right:6px">${readMoreModal}</span>
+        </div>`;
+      }
+
+      document.getElementById('mbody').innerHTML = `
+        <div style="height:5px;background:linear-gradient(90deg,${t.p},${t.p}77);border-radius:5px;margin-bottom:20px"></div>
+        
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+          ${modalImgHtml}
+          <div style="flex:1;min-width:0">
+            <div class="mtitle">${nm}</div>
+          </div>
+        </div>
+
+        ${bensHtml}
+
+        <div class="cinfo-row" style="; border: ${t.hlBorder3}; display: flex; margin: 14px 0px 14px 0px">
+
+          <div class="cinfo-cell"style=";border-right:0px solid ${t.hlBorder};display: flex">                                                             <!-- 年薪 -->
+                                                                                                                                                            
+            <span class="cinfo-label" style="${subheadStyle}" >${lang==='zh'?'年薪要求 (港幣)':'ELIGIBILITY (HKD)'}</span>
+            <span class="cinfo-value" style="${contentsHtml}">
+              ${(() => {
+                if (ft === "N/A") {
+                  return lang === 'zh' 
+                    ? "無年薪要求"
+                    : "No income requirement";
+                }
+
+                const isBalance = ft.toLowerCase().includes('balance');
+                const value = isBalance ? cleanedFt : ft;
+
+                if (lang === 'zh') {
+                  return isBalance 
+                    ? `全面理財總值 ≥<br>港幣${value}元`
+                    : `$ ${value}`;
+                } else {
+                  return isBalance 
+                    ? `Balance ≥<br>$ ${value}`
+                    : `Annual income ≥<br> $ ${value}`;
+                }
+              })()}
+            </span>
+          
+          </div>
+              
+
+          <div class="cinfo-cell"style=";border-right:0px solid ${t.hlBorder};display: flex">                                                             <!-- 年費 -->                                                                                                                                               
+            <span class="cinfo-label" style="${subheadStyle}">${lang==='zh'?'年費 (港幣)':'ANNUAL FEE (HKD)'}</span>
+            <span class="cinfo-value" style="${contentsHtml}">${fee}</span>
+          </div>
+
+
+          ${mls && mls !== "unknown" ? `
+            <div class="cinfo-cell"style=";border-right:0px solid ${t.hlBorder};display: flex">                                                           <!-- 里數 -->  
+                                                                                                                                                                                
+              <span class="cinfo-label" style="${subheadStyle}" >${lang==='zh'?'里數低至 (港幣)':'HKD / MILES'}</span>
+              <span class="cinfo-value" style="${contentsHtml}">
+                ${(() => {
+                  if (lang === 'zh') {
+                    return `本地 $ ${mls1} / 里<br>海外 $ ${mls2} / 里`;
+                  } else {
+                    return `Local ≥ $ ${mls1}<br>Overseas ≥ $ ${mls2}`;
+                  }
+                })()}
+              </span>
+            </div>
+          ` : ''}
+          
+                                                      
+          ${cb && cb !== "unknown" ? `
+            <div class="cinfo-cell"style=";border-right:0px solid ${t.hlBorder};display: flex">                                                           <!-- 回贈 -->  
+              <span class="cinfo-label" style="${subheadStyle}" >${lang==='zh'?'回贈高達':'Cashback'}</span>
+              <span class="cinfo-value" style="${contentsHtml}">
+                ${(() => {
+                  if (lang === 'zh') {
+                    return `${cb}`;
+                  } else {
+                    return `${cb}`;
+                  }
+                })()}
+              </span>
+            </div>
+          ` : ''}
+
+
+        </div>
+
+
+        <div class="macts">
+          <a class="mbtn pri" style="background:${t.p};color:#ffffff" href="${lang==='zh' ? c.url_zh : c.url_en}" target="_blank" rel="noopener">${al} ↗</a>
+          <button class="mbtn sec" style="border: ${t.hlBorder3}" onclick="closeM()">${cl}</button>
+        </div>`;
+
+
+        document.getElementById('moverlay').classList.add('open');
+        document.body.style.overflow='hidden';
+      }
+
+
+    function closeMO(e) { if(e.target===document.getElementById('moverlay')) closeM(); }
+    function closeM()   { document.getElementById('moverlay').classList.remove('open'); document.body.style.overflow=''; }
+    document.addEventListener('keydown', e => { if(e.key==='Escape') closeM(); });
+
+
+    // ── INIT — load scraped data if available, else fall back to built-in CARDS ──
+    const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+
+    function updateTimestamp(isoStr) {
+      const d = isoStr ? new Date(isoStr) : new Date();
+      document.getElementById('lastUpdated').textContent =
+        `更新: ${d.getDate()} ${mo[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+
+    function normaliseScrapedCard(raw) {
+      // Convert the Python CardOffer dict shape → frontend CARDS shape
+      return {
+        id: raw.id ? parseInt(raw.id.replace(/[^0-9]/g,'')) || Math.random()*9999|0 : Math.random()*9999|0,
+        bank: raw.bank || 'other',
+        bankName: { en: raw.bank_name_en || '', zh: raw.bank_name_zh || '' },
+        name: { en: raw.name_en || '', zh: raw.name_zh || '' },
+        annualFee: { en: raw.annual_fee_en || '', zh: raw.annual_fee_zh || '' },
+        
+        feeType: { en: raw.fee_type || '', zh: raw.fee_type || '' },
+        miles: { en: raw.miles || '', zh: raw.miles || '' },
+        cashback: { en: raw.cashback_en || '', zh: raw.cashback_zh || '' },
+
+        badge_miles: raw.badge_miles || null,
+        badge_cashback: raw.badge_cashback || null,
+        badge_hot: raw.badge_hot || null,
+        badge_travel: raw.badge_travel || null,
+        badge_dining: raw.badge_dining || null,
+        badge_supermarket: raw.badge_supermarket || null,
+        badge_online: raw.badge_online || null,
+
+        highlight: { en: raw.highlight_en || '', zh: raw.highlight_zh || '' },
+        hIcon: raw.highlight_icon || '',
+        cats: raw.categories || [],
+        src: raw.source || 'bank',
+        srcL: { en: raw.source_label_en || '', zh: raw.source_label_zh || '' },
+        url_en: raw.url_en || '#',
+        url_zh: raw.url_zh || '#',
+        imageUrl: raw.image_url || '',
+        bens: {
+          en: (raw.benefits || []).map(b => ({ i: b.icon || '💳', t: b.text_en || '', c: b.cat})),
+          zh: (raw.benefits || []).map(b => ({ i: b.icon || '💳', t: b.text_zh || b.text_en || '', c: b.cat })),
+        }
+      };
+    }
+
+
+    function toggleFilter() {
+      const container = document.querySelector('.filter-container');
+      container.classList.toggle('active');
+    }
+
+
+    async function loadData() {
+      try {
+        const res = await fetch('./data/cards.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const payload = await res.json();
+
+        if (payload.cards && payload.cards.length > 0) {
+          // Replace hardcoded CARDS with live scraped data
+          CARDS.length = 0;
+          payload.cards.forEach(raw => CARDS.push(normaliseScrapedCard(raw)));
+
+          // Update stats
+          const banks = new Set(CARDS.map(c => c.bank)).size;
+          document.querySelector('.stat-n').textContent = CARDS.length;
+          document.querySelectorAll('.stat-n')[1].textContent = banks;
+
+          // updateTimestamp(payload.generated_at);
+          console.log(`✅ Loaded ${CARDS.length} live cards from cards.json (generated ${payload.generated_at})`);
+        } else {
+          throw new Error('Empty cards array');
+        }
+      } catch (e) {
+        // Graceful fallback — use built-in demo data
+        console.info(`ℹ️  cards.json not found or empty (${e.message}) — using built-in demo data`);
+        // updateTimestamp(null);
+      }
+      renderCards();
+    }
+
+
+    loadData();
+    
+    </script>
+
+  </body>
+
+</html>
