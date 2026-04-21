@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<!-- <html lang="zh-HK" data-theme="light"> -->
-<html lang="zh-HK">
+<html lang="zh-HK" data-theme="light">
+<!-- <html lang="zh-HK"> -->
   <head>
-    <meta name="color-scheme" content="light dark">
+    <!-- <meta name="color-scheme" content="light dark"> -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CardWise 一眼搵到最啱你嘅信用卡</title>
@@ -1265,64 +1265,6 @@
         }
     </style>
   </head>
-
-  <script>
-    const html = document.documentElement;
-    const themeBtn = document.getElementById('themeBtn');
-
-    function setTheme(theme) {
-        if (theme === 'dark') {
-            html.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-            themeBtn.textContent = '☀️';   // or 🌙 depending on your icon
-        } else if (theme === 'light') {
-            html.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'light');
-            themeBtn.textContent = '🌙';
-        } else {
-            // 'system' mode
-            localStorage.removeItem('theme');
-            html.removeAttribute('data-theme');
-        }
-    }
-
-    // Load saved preference or respect system on first visit
-    function initTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        
-        if (savedTheme === 'dark') {
-            setTheme('dark');
-        } else if (savedTheme === 'light') {
-            setTheme('light');
-        } else {
-            // No saved preference → follow system
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (prefersDark) {
-                html.setAttribute('data-theme', 'dark');
-            }
-        }
-    }
-
-    // Listen for system theme changes (if user didn't manually choose)
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            if (e.matches) {
-                html.setAttribute('data-theme', 'dark');
-            } else {
-                html.removeAttribute('data-theme');
-            }
-        }
-    });
-
-    // Toggle button
-    themeBtn.addEventListener('click', () => {
-        const isDark = html.getAttribute('data-theme') === 'dark';
-        setTheme(isDark ? 'light' : 'dark');
-    });
-
-    // Initialize on page load
-    initTheme();
-  </script>
   
   <body>
 
